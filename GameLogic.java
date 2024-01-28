@@ -269,6 +269,7 @@ public class GameLogic implements PlayableLogic
     {
         ArrayList<ConcretePiece> print = new ArrayList<>();
         ArrayList<String> piecesPrint = new ArrayList<>();
+        ArrayList<ConcretePiece> killPiece = new ArrayList<>();
         String str = "";
         for(int i=0; i<11; i++)
         {
@@ -278,12 +279,32 @@ public class GameLogic implements PlayableLogic
                 {
                     pieces[i][j].setSquare();
                     print.add(pieces[i][j]);
+                    if(pieces[i][j] instanceof Pawn && ((Pawn) pieces[i][j]).getKills() > 0)
+                    {
+                        killPiece.add(pieces[i][j]);
+                    }
                 }
                 if (counterPos[i][j] != null && getSize(counterPos[i][j]) > 1)
                 {
                     str = "("+i+", "+j+")" +getSize(counterPos[i][j]) + " pieces";
                     piecesPrint.add(str);
                 }
+            }
+        }
+        //add the dead pieces to the sort.
+        Stack<ConcretePiece> temp = new Stack<>();
+        while(!deadPiece.isEmpty())
+        {
+            deadPiece.pop();
+            if(!deadPiece.isEmpty())
+            {
+                temp.add(deadPiece.pop());
+                print.add(temp.peek());
+                if(temp.peek() instanceof Pawn && ((Pawn) temp.peek()).getKills() > 0)
+                {
+                    killPiece.add(temp.peek());
+                }
+                temp.peek().setSquare();
             }
         }
         //sort and print for section 1.
@@ -309,26 +330,11 @@ public class GameLogic implements PlayableLogic
             }
         }
         System.out.println("***************************************************************************");
-        //add the dead pieces to the sort.
-        Stack<ConcretePiece> temp = new Stack<>();
-        while(!deadPiece.isEmpty())
-        {
-            deadPiece.pop();
-            if(!deadPiece.isEmpty())
-            {
-                temp.add(deadPiece.pop());
-                print.add(temp.peek());
-                temp.peek().setSquare();
-            }
-        }
         //sort and print for section 2.
-        Collections.sort(print, new MyComparator("kills",winner));
-        for (int i = 0; i < print.size(); i++)
+        Collections.sort(killPiece, new MyComparator("kills",winner));
+        for (int i = 0; i < killPiece.size(); i++)
         {
-            if (print.get(i) instanceof Pawn && ((Pawn) print.get(i)).getKills() > 0)
-            {
-                System.out.println(print.get(i).getName() + ": " + ((Pawn) print.get(i)).getKills() + " kills");
-            }
+            System.out.println(killPiece.get(i).getName() + ": " + ((Pawn) killPiece.get(i)).getKills() + " kills");
         }
         //sort and print for section 3.
         System.out.println("***************************************************************************");
