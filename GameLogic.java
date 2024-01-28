@@ -318,6 +318,7 @@ public class GameLogic implements PlayableLogic
             {
                 temp.add(deadPiece.pop());
                 print.add(temp.peek());
+                temp.peek().setSquare();
             }
         }
         //sort and print for section 2.
