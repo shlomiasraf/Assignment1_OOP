@@ -1,6 +1,6 @@
 public class MyComparator implements java.util.Comparator<Object> {
-    String compKind;
-    Player winner;
+    private String compKind;
+    private Player winner;
     public MyComparator(String compKind,Player winner)
     {
         super();
@@ -30,9 +30,9 @@ public class MyComparator implements java.util.Comparator<Object> {
             //compare for section 1.
             if (compKind.equals("locations"))
             {
-                if (o1.owner != o2.owner)
+                if (o1.getOwner() != o2.getOwner())
                 {
-                    if ((o1.owner.isPlayerOne() && winner.isPlayerOne()) || (!o1.owner.isPlayerOne() && !winner.isPlayerOne()))
+                    if ((o1.getOwner().isPlayerOne() && winner.isPlayerOne()) || (!o1.getOwner().isPlayerOne() && !winner.isPlayerOne()))
                     {
                         return -1;
                     }

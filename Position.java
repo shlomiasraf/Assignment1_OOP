@@ -1,6 +1,6 @@
 public class Position {
-    int rowIndex;
-    int colIndex;
+    private int rowIndex;
+    private int colIndex;
     public Position(int colIndex,int rowIndex)
     {
         this.colIndex = colIndex;
@@ -40,6 +40,22 @@ public class Position {
         return false;
     }
 
+    /**
+     *
+     * @return the col index of this position.
+     */
+    public int getColIndex() {
+        return colIndex;
+    }
+
+    /**
+     *
+     * @return the row index of this position.
+     */
+    public int getRowIndex()
+    {
+        return rowIndex;
+    }
     /**
      * @brief checks if the objects are equals.
      * @param position the object we want to compare.

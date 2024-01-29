@@ -1,10 +1,10 @@
 public class ConcretePlayer implements Player{
-    int playerNumber;
-    int playerWins;
-    public ConcretePlayer(int playerNumber,int playerWins)
+    private final int playerNumber;
+    private int playerWins;
+    public ConcretePlayer(int playerNumber)
     {
         this.playerNumber = playerNumber;
-        this.playerWins = playerWins;
+        this.playerWins = 0;
     }
 
     /**
@@ -57,11 +57,10 @@ public class ConcretePlayer implements Player{
     }
 
     /**
-     * @brief update the number of wins.
-     * @param wins the wins we want to update to.
+     * @brief add the number of wins+1.
      */
-    public void setWins(int wins)
+    public void addWins()
     {
-        this.playerWins = wins;
+        this.playerWins++;
     }
 }

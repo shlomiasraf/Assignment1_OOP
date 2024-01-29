@@ -1,6 +1,6 @@
 
 public class Pawn extends ConcretePiece{
-    int kills = 0;
+    private int kills = 0;
     public Pawn(Player owner, String type, String name, String locations)
     {
         super(owner, type, name,locations);

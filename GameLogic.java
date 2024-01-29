@@ -4,17 +4,17 @@ import java.util.Stack;
 
 public class GameLogic implements PlayableLogic
 {
-    ConcretePlayer player1 = new ConcretePlayer(1,0);
-    ConcretePlayer player2 = new ConcretePlayer(2,0);
-    boolean secPlayerTurn = true;
-    ConcretePiece[][] pieces = new ConcretePiece[11][11];
-    String[][] counterPos = new String[11][11];
-    Stack<Position> last = new Stack<>();
-    Stack<Position> newL = new Stack<>();
-    Stack<ConcretePiece> deadPiece = new Stack<>();
-    Position kingPos = new Position(5,5);
-    boolean dataMember = false;
-    boolean gameFinished = false;
+    private final ConcretePlayer player1 = new ConcretePlayer(1);
+    private final ConcretePlayer player2 = new ConcretePlayer(2);
+    private boolean secPlayerTurn = true;
+    private ConcretePiece[][] pieces = new ConcretePiece[11][11];
+    private String[][] counterPos = new String[11][11];
+    private Stack<Position> last = new Stack<>();
+    private Stack<Position> newL = new Stack<>();
+    private Stack<ConcretePiece> deadPiece = new Stack<>();
+    private Position kingPos = new Position(5,5);
+    private boolean dataMember = false;
+    private boolean gameFinished = false;
 
     /**
      * @brief We check if the piece can move and if so we update the variables accordingly.
@@ -29,7 +29,7 @@ public class GameLogic implements PlayableLogic
         {
             reset();
         }
-        ConcretePiece piece = pieces[a.colIndex][a.rowIndex];
+        ConcretePiece piece = pieces[a.getColIndex()][a.getRowIndex()];
         if(piece == null)
         {
             return false;
@@ -42,13 +42,13 @@ public class GameLogic implements PlayableLogic
         {
             return false;
         }
-        if(a.difPos(b) && (a.rowIndex == b.rowIndex || a.colIndex == b.colIndex))
+        if(a.difPos(b) && (a.getRowIndex() == b.getRowIndex() || a.getColIndex() == b.getColIndex()))
         {
-            if (a.rowIndex == b.rowIndex)
+            if (a.getRowIndex() == b.getRowIndex())
             {
-                for(int i = Math.min(a.colIndex,b.colIndex); i <= Math.max(a.colIndex,b.colIndex); i++)
+                for(int i = Math.min(a.getColIndex(),b.getColIndex()); i <= Math.max(a.getColIndex(),b.getColIndex()); i++)
                 {
-                    Position p1 = new Position(i,a.rowIndex);
+                    Position p1 = new Position(i,a.getRowIndex());
                     if(getPieceAtPosition(p1) != null && !p1.equals(a))
                     {
                         return false;
@@ -57,9 +57,9 @@ public class GameLogic implements PlayableLogic
             }
             else
             {
-                for(int i = Math.min(a.rowIndex,b.rowIndex); i <= Math.max(a.rowIndex,b.rowIndex); i++)
+                for(int i = Math.min(a.getRowIndex(),b.getRowIndex()); i <= Math.max(a.getRowIndex(),b.getRowIndex()); i++)
                 {
-                    Position p1 = new Position(a.colIndex,i);
+                    Position p1 = new Position(a.getColIndex(),i);
                     if(getPieceAtPosition(p1) != null && !p1.equals(a))
                     {
                         return false;
@@ -73,14 +73,14 @@ public class GameLogic implements PlayableLogic
         }
         last.add(a);
         newL.add(b);
-        if(counterPos[b.colIndex][b.rowIndex] == null || !counterPos[b.colIndex][b.rowIndex].contains(piece.name))
+        if(counterPos[b.getColIndex()][b.getRowIndex()] == null || !counterPos[b.getColIndex()][b.getRowIndex()].contains(piece.getName()))
         {
-            counterPos[b.colIndex][b.rowIndex] += piece.name + ",";
+            counterPos[b.getColIndex()][b.getRowIndex()] += piece.getName() + ",";
         }
         //move the player.
-        pieces[a.colIndex][a.rowIndex].locations.add(b.toString());
-        pieces[b.colIndex][b.rowIndex] = pieces[a.colIndex][a.rowIndex];
-        pieces[a.colIndex][a.rowIndex] = null;
+        pieces[a.getColIndex()][a.getRowIndex()].addLocation(b.toString());
+        pieces[b.getColIndex()][b.getRowIndex()] = pieces[a.getColIndex()][a.getRowIndex()];
+        pieces[a.getColIndex()][a.getRowIndex()] = null;
         if(piece.getType().equals("King"))
         {
             kingPos = b;
@@ -112,7 +112,7 @@ public class GameLogic implements PlayableLogic
     @Override
     public Piece getPieceAtPosition(Position position)
     {
-        return pieces[position.colIndex][position.rowIndex];
+        return pieces[position.getColIndex()][position.getRowIndex()];
     }
 
     /**
@@ -147,28 +147,28 @@ public class GameLogic implements PlayableLogic
             ConcretePiece rival2 = null;
             ConcretePiece rival3 = null;
             ConcretePiece rival4 = null;
-            if (kingPos.colIndex + 1 <= 10) {
-                rival1 = pieces[kingPos.colIndex + 1][kingPos.rowIndex];
+            if (kingPos.getColIndex() + 1 <= 10) {
+                rival1 = pieces[kingPos.getColIndex() + 1][kingPos.getRowIndex()];
             }
-            if (kingPos.colIndex - 1 >= 0) {
-                rival2 = pieces[kingPos.colIndex - 1][kingPos.rowIndex];
+            if (kingPos.getColIndex() - 1 >= 0) {
+                rival2 = pieces[kingPos.getColIndex() - 1][kingPos.getRowIndex()];
             }
-            if (kingPos.rowIndex + 1 <= 10) {
-                rival3 = pieces[kingPos.colIndex][kingPos.rowIndex + 1];
+            if (kingPos.getRowIndex() + 1 <= 10) {
+                rival3 = pieces[kingPos.getColIndex()][kingPos.getRowIndex() + 1];
             }
-            if (kingPos.rowIndex - 1 >= 0) {
-                rival4 = pieces[kingPos.colIndex][kingPos.rowIndex - 1];
+            if (kingPos.getRowIndex() - 1 >= 0) {
+                rival4 = pieces[kingPos.getColIndex()][kingPos.getRowIndex() - 1];
             }
             if (kingPos.winningPosition()) {
                 //player1 win the game.
-                player1.setWins(player1.getWins() + 1);
+                player1.addWins();
                 statInfo(player1);
                 gameFinished = true;
                 return true;
             }
-            if (((rival1 != null && rival1.getOwner().equals(getSecondPlayer())) || kingPos.colIndex + 1 > 10) && ((rival2 != null && rival2.getOwner().equals(getSecondPlayer())) || kingPos.colIndex - 1 < 0) && ((rival3 != null && rival3.getOwner().equals(getSecondPlayer())) || kingPos.rowIndex + 1 > 10) && ((rival4 != null && rival4.getOwner().equals(getSecondPlayer())) || kingPos.rowIndex - 1 < 0)) {
+            if (((rival1 != null && rival1.getOwner().equals(getSecondPlayer())) || kingPos.getColIndex() + 1 > 10) && ((rival2 != null && rival2.getOwner().equals(getSecondPlayer())) || kingPos.getColIndex() - 1 < 0) && ((rival3 != null && rival3.getOwner().equals(getSecondPlayer())) || kingPos.getRowIndex() + 1 > 10) && ((rival4 != null && rival4.getOwner().equals(getSecondPlayer())) || kingPos.getRowIndex() - 1 < 0)) {
                 //player2 win the game.
-                player2.setWins(player2.getWins() + 1);
+                player2.addWins();
                 statInfo(player2);
                 gameFinished = true;
                 return true;
@@ -222,23 +222,25 @@ public class GameLogic implements PlayableLogic
     {
         if(!newL.isEmpty())
         {
-            while (!deadPiece.isEmpty() && ! newL.isEmpty() && pieces[newL.peek().colIndex][newL.peek().rowIndex] == null)
+            while (!deadPiece.isEmpty() && ! newL.isEmpty() && pieces[newL.peek().getColIndex()][newL.peek().getRowIndex()] == null)
             {
                 //back from killing
                 ConcretePiece piece = deadPiece.pop();
                 if(piece instanceof Pawn)
                 {
+                    //reduce 1 kill from killer piece.
                     ((Pawn) piece).reduceKill();
                 }
-                pieces[newL.peek().colIndex][newL.pop().rowIndex] = deadPiece.pop();
+                //bring a dead piece back to life
+                pieces[newL.peek().getColIndex()][newL.pop().getRowIndex()] = deadPiece.pop();
             }
-            if (!last.isEmpty()  &&! newL.isEmpty() && ! newL.equals(last.peek()))
+            if (!last.isEmpty()  &&! newL.isEmpty() && ! newL.peek().equals(last.peek()))
             {
                 //back to previous position.
-                counterPos[newL.peek().colIndex][newL.peek().rowIndex] = counterPos[newL.peek().colIndex][newL.peek().rowIndex].substring(0,counterPos[newL.peek().colIndex][newL.peek().rowIndex].length()-3);
-                pieces[newL.peek().colIndex][newL.peek().rowIndex].removeLastLoc();
-                pieces[last.peek().colIndex][last.pop().rowIndex] = pieces[newL.peek().colIndex][newL.peek().rowIndex];
-                pieces[newL.peek().colIndex][newL.pop().rowIndex] = null;
+                counterPos[newL.peek().getColIndex()][newL.peek().getRowIndex()] = counterPos[newL.peek().getColIndex()][newL.peek().getRowIndex()].substring(0,counterPos[newL.peek().getColIndex()][newL.peek().getRowIndex()].length()-3);
+                pieces[newL.peek().getColIndex()][newL.peek().getRowIndex()].removeLastLoc();
+                pieces[last.peek().getColIndex()][last.pop().getRowIndex()] = pieces[newL.peek().getColIndex()][newL.peek().getRowIndex()];
+                pieces[newL.peek().getColIndex()][newL.pop().getRowIndex()] = null;
                 if (secPlayerTurn)
                 {
                     secPlayerTurn = false;
@@ -269,19 +271,20 @@ public class GameLogic implements PlayableLogic
     {
         ArrayList<ConcretePiece> print = new ArrayList<>();
         ArrayList<String> piecesPrint = new ArrayList<>();
-        ArrayList<ConcretePiece> killPiece = new ArrayList<>();
+        ArrayList<ConcretePiece> printForKill = new ArrayList<>();
         String str = "";
         for(int i=0; i<11; i++)
         {
             for(int j=0; j<11; j++)
             {
+                //add pieces to arraylists.
                 if (pieces[i][j] != null)
                 {
                     pieces[i][j].setSquare();
                     print.add(pieces[i][j]);
                     if(pieces[i][j] instanceof Pawn && ((Pawn) pieces[i][j]).getKills() > 0)
                     {
-                        killPiece.add(pieces[i][j]);
+                        printForKill.add(pieces[i][j]);
                     }
                 }
                 if (counterPos[i][j] != null && getSize(counterPos[i][j]) > 1)
@@ -302,7 +305,7 @@ public class GameLogic implements PlayableLogic
                 print.add(temp.peek());
                 if(temp.peek() instanceof Pawn && ((Pawn) temp.peek()).getKills() > 0)
                 {
-                    killPiece.add(temp.peek());
+                    printForKill.add(temp.peek());
                 }
                 temp.peek().setSquare();
             }
@@ -331,10 +334,10 @@ public class GameLogic implements PlayableLogic
         }
         System.out.println("***************************************************************************");
         //sort and print for section 2.
-        Collections.sort(killPiece, new MyComparator("kills",winner));
-        for (int i = 0; i < killPiece.size(); i++)
+        Collections.sort(printForKill, new MyComparator("kills",winner));
+        for (int i = 0; i < printForKill.size(); i++)
         {
-            System.out.println(killPiece.get(i).getName() + ": " + ((Pawn) killPiece.get(i)).getKills() + " kills");
+            System.out.println(printForKill.get(i).getName() + ": " + ((Pawn) printForKill.get(i)).getKills() + " kills");
         }
         //sort and print for section 3.
         System.out.println("***************************************************************************");
@@ -455,7 +458,7 @@ public class GameLogic implements PlayableLogic
     {
         if(!newL.isEmpty())
         {
-            ConcretePiece killerPiece = pieces[newL.peek().colIndex][newL.peek().rowIndex];
+            ConcretePiece killerPiece = pieces[newL.peek().getColIndex()][newL.peek().getRowIndex()];
             ArrayList<Position> enemyPos = killEnemy(killerPiece,newL.peek());
             for (int i=0; i< enemyPos.size(); i++)
             {
@@ -464,10 +467,10 @@ public class GameLogic implements PlayableLogic
                     ((Pawn) killerPiece).addKill();
                 }
                 //perform the kill.
-                newL.add(new Position(enemyPos.get(i).colIndex,enemyPos.get(i).rowIndex));
-                deadPiece.add(pieces[enemyPos.get(i).colIndex][enemyPos.get(i).rowIndex]);
+                newL.add(new Position(enemyPos.get(i).getColIndex(),enemyPos.get(i).getRowIndex()));
+                deadPiece.add(pieces[enemyPos.get(i).getColIndex()][enemyPos.get(i).getRowIndex()]);
                 deadPiece.add(killerPiece);
-                pieces[enemyPos.get(i).colIndex][enemyPos.get(i).rowIndex] = null;
+                pieces[enemyPos.get(i).getColIndex()][enemyPos.get(i).getRowIndex()] = null;
             }
         }
     }
@@ -485,88 +488,88 @@ public class GameLogic implements PlayableLogic
         ConcretePiece rival2 = null;
         ConcretePiece rival3 = null;
         ConcretePiece rival4 = null;
-        if (position.colIndex+1 <= 10) {
-            rival1 = pieces[position.colIndex+1][position.rowIndex];
+        if (position.getColIndex()+1 <= 10) {
+            rival1 = pieces[position.getColIndex()+1][position.getRowIndex()];
         }
-        if(position.colIndex-1 >= 0) {
-            rival2 = pieces[position.colIndex - 1][position.rowIndex];
+        if(position.getColIndex()-1 >= 0) {
+            rival2 = pieces[position.getColIndex() - 1][position.getRowIndex()];
         }
-        if(position.rowIndex+1 <= 10) {
-            rival3 = pieces[position.colIndex][position.rowIndex + 1];
+        if(position.getRowIndex()+1 <= 10) {
+            rival3 = pieces[position.getColIndex()][position.getRowIndex() + 1];
         }
-        if(position.rowIndex-1 >= 0) {
-            rival4 = pieces[position.colIndex][position.rowIndex - 1];
+        if(position.getRowIndex()-1 >= 0) {
+            rival4 = pieces[position.getColIndex()][position.getRowIndex() - 1];
         }
         if(rival1 != null && !rival1.getOwner().equals(piece.getOwner()) && !rival1.getType().equals("King"))
         {
-            Position pos = new Position(position.colIndex+2,position.rowIndex);
-            if((position.colIndex +2) <=10  && !pos.winningPosition())
+            Position pos = new Position(position.getColIndex()+2,position.getRowIndex());
+            if((position.getColIndex() +2) <=10  && !pos.winningPosition())
             {
-                ConcretePiece partner = pieces[position.colIndex + 2][position.rowIndex];
+                ConcretePiece partner = pieces[position.getColIndex() + 2][position.getRowIndex()];
                 if (partner != null && !rival1.getOwner().equals(partner.getOwner()) && !partner.getType().equals("King"))
                 {
                     //add to positions of pieces that going to die.
-                    enemyPos.add(new Position(position.colIndex + 1, position.rowIndex));
+                    enemyPos.add(new Position(position.getColIndex() + 1, position.getRowIndex()));
                 }
             }
             else
             {
                 //add to positions of pieces that going to die.
-                enemyPos.add(new Position(position.colIndex + 1, position.rowIndex));
+                enemyPos.add(new Position(position.getColIndex() + 1, position.getRowIndex()));
             }
         }
         if(rival2 != null && !rival2.getOwner().equals(piece.getOwner()) && !rival2.getType().equals("King"))
         {
-            Position pos = new Position(position.colIndex-2,position.rowIndex);
-            if((position.colIndex-2) >= 0 && !pos.winningPosition())
+            Position pos = new Position(position.getColIndex()-2,position.getRowIndex());
+            if((position.getColIndex()-2) >= 0 && !pos.winningPosition())
             {
-                ConcretePiece partner = pieces[position.colIndex - 2][position.rowIndex];
+                ConcretePiece partner = pieces[position.getColIndex() - 2][position.getRowIndex()];
                 if (partner != null && !rival2.getOwner().equals(partner.getOwner()) && !partner.getType().equals("King"))
                 {
                     //add to positions of pieces that going to die.
-                    enemyPos.add(new Position(position.colIndex - 1, position.rowIndex));
+                    enemyPos.add(new Position(position.getColIndex() - 1, position.getRowIndex()));
                 }
             }
             else
             {
                 //add to positions of pieces that going to die.
-                enemyPos.add(new Position(position.colIndex - 1, position.rowIndex));
+                enemyPos.add(new Position(position.getColIndex() - 1, position.getRowIndex()));
             }
         }
         if(rival3 != null && !rival3.getOwner().equals(piece.getOwner()) && !rival3.getType().equals("King"))
         {
-            Position pos = new Position(position.colIndex,position.rowIndex+2);
-            if((position.rowIndex+2) <= 10 && !pos.winningPosition())
+            Position pos = new Position(position.getColIndex(),position.getRowIndex()+2);
+            if((position.getRowIndex()+2) <= 10 && !pos.winningPosition())
             {
-                ConcretePiece partner = pieces[position.colIndex][position.rowIndex + 2];
+                ConcretePiece partner = pieces[position.getColIndex()][position.getRowIndex() + 2];
                 if (partner != null && !rival3.getOwner().equals(partner.getOwner()) && !partner.getType().equals("King"))
                 {
                     //add to positions of pieces that going to die.
-                    enemyPos.add(new Position(position.colIndex, position.rowIndex + 1));
+                    enemyPos.add(new Position(position.getColIndex(), position.getRowIndex() + 1));
                 }
             }
             else
             {
                 //add to positions of pieces that going to die.
-                enemyPos.add(new Position(position.colIndex, position.rowIndex + 1));
+                enemyPos.add(new Position(position.getColIndex(), position.getRowIndex() + 1));
             }
         }
         if(rival4 != null && !rival4.getOwner().equals(piece.getOwner()) && !rival4.getType().equals("King"))
         {
-            Position pos = new Position(position.colIndex, position.rowIndex-2);
-            if((position.rowIndex-2) >= 0 && !pos.winningPosition())
+            Position pos = new Position(position.getColIndex(), position.getRowIndex()-2);
+            if((position.getRowIndex()-2) >= 0 && !pos.winningPosition())
             {
-                ConcretePiece partner = pieces[position.colIndex][position.rowIndex-2];
+                ConcretePiece partner = pieces[position.getColIndex()][position.getRowIndex()-2];
                 if (partner != null && !rival4.getOwner().equals(partner.getOwner()) && !partner.getType().equals("King"))
                 {
                     //add to positions of pieces that going to die.
-                    enemyPos.add(new Position(position.colIndex,position.rowIndex-1));
+                    enemyPos.add(new Position(position.getColIndex(),position.getRowIndex()-1));
                 }
             }
             else
             {
                 //add to positions of pieces that going to die.
-                enemyPos.add(new Position(position.colIndex,position.rowIndex-1));
+                enemyPos.add(new Position(position.getColIndex(),position.getRowIndex()-1));
             }
         }
         return enemyPos;

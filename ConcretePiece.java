@@ -1,20 +1,18 @@
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 public class ConcretePiece implements Piece {
-    Player owner;
-    String type;
-    String name;
-    ArrayList<String> locations = new ArrayList<>();
-    int square = 0;
+    private Player owner;
+    private String type;
+    private final String name;
+    private ArrayList<String> locations = new ArrayList<>();
+    private int square;
     public ConcretePiece(Player owner, String type,String name,String locations)
     {
         this.owner = owner;
         this.type = type;
         this.name = name;
         this.locations.add(locations);
+        this.square = 0;
     }
 
     /**
@@ -85,6 +83,14 @@ public class ConcretePiece implements Piece {
     public ArrayList<String> getLocations()
     {
         return this.locations;
+    }
+    /**
+     *
+     * @brief add position to the positions this concrete piece stepped on.
+     */
+    public void addLocation(String loc)
+    {
+        locations.add(loc);
     }
 
     /**
