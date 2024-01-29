@@ -267,7 +267,7 @@ public class GameLogic implements PlayableLogic
      * @param winner - the winner of the game.
      * @brief prints all required game statistics by sorting by comparator for each section.
      * */
-    public void statInfo(Player winner)
+    private void statInfo(Player winner)
     {
         ArrayList<ConcretePiece> print = new ArrayList<>();
         ArrayList<String> piecesPrint = new ArrayList<>();
@@ -362,7 +362,7 @@ public class GameLogic implements PlayableLogic
     /**
      * @brief create all the player1 pieces on the board.
      */
-    public void createPlayer1Piece()
+    private void createPlayer1Piece()
     {
         Pawn p1 = new Pawn(player1, "Pawn", "D1","(5, 3)");
         pieces[5][3] = p1;
@@ -406,7 +406,7 @@ public class GameLogic implements PlayableLogic
     /**
      * @brief create all the player2 pieces on the board.
      */
-    public void createPlayer2Piece()
+    private void createPlayer2Piece()
     {
         Pawn p2 = new Pawn(player2, "Pawn", "A12","(1, 5)");
         pieces[1][5] = p2;
@@ -454,7 +454,7 @@ public class GameLogic implements PlayableLogic
     /**
      * @brief checks if a kill should be performed due to the move and if so, performs it.
      */
-    public void checkKill()
+    private void checkKill()
     {
         if(!newL.isEmpty())
         {
@@ -481,7 +481,7 @@ public class GameLogic implements PlayableLogic
      * @param position - the position of this killerPiece.
      * @return arraylist of all the positions of pieces that die from this move.
      */
-    public ArrayList<Position> killEnemy(ConcretePiece piece,Position position)
+    private ArrayList<Position> killEnemy(ConcretePiece piece,Position position)
     {
         ArrayList<Position> enemyPos = new ArrayList<>();
         ConcretePiece rival1 = null;
@@ -580,7 +580,7 @@ public class GameLogic implements PlayableLogic
      * @param str the string we get.
      * @return check the length of this string by "," split.
      */
-    public int getSize(String str)
+    private int getSize(String str)
     {
         String[] s1 = str.split(",");
         return s1.length;
